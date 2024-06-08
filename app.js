@@ -9,8 +9,10 @@ const multer = require('multer');
 const {graphqlHTTP}=require('express-graphql')
 const graphqlSchema=require('./graphql/schema')
 const graphqlResolver=require('./graphql/resolver')
+const authMiddleware = require('./middleware/auth');
 
 const app = express();
+
 
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -49,7 +51,7 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   next();
 });
-
+app.use(authMiddleware);
 app.use('/graphql',graphqlHTTP({
   schema:graphqlSchema,
   rootValue:graphqlResolver,
